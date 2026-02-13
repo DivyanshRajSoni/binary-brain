@@ -23,7 +23,7 @@ from src.pipeline import BinaryBrainPipeline
 
 st.set_page_config(
     page_title="Binary Brain - Document AI",
-    page_icon="\ud83e\udde0",
+    page_icon=":brain:",
     layout="wide",
     initial_sidebar_state="expanded"
 )
@@ -317,7 +317,7 @@ with tab1:
             else:
                 st.info(f"Uploaded: {uploaded_file.name} ({uploaded_file.size / 1024:.1f} KB)")
 
-        if st.button("\u2728 Extract Data", type="primary", use_container_width=True):
+        if st.button("Extract Data", type="primary", use_container_width=True):
             with st.spinner("Processing document through Binary Brain pipeline..."):
                 with tempfile.NamedTemporaryFile(
                     delete=False,
@@ -402,7 +402,7 @@ with tab2:
 
         json_str = json.dumps(result, indent=2, ensure_ascii=False)
         st.download_button(
-            "\u2b07\ufe0f Download JSON", json_str,
+            "Download JSON", json_str,
             file_name=f"{st.session_state.get('file_name', 'output')}_result.json",
             mime="application/json"
         )
@@ -432,7 +432,7 @@ with tab3:
     <div class="about-feature"><i class="fas fa-language"></i> Multilingual support (English, Hindi, Gujarati)</div>
     <div class="about-feature"><i class="fas fa-th"></i> Layout-independent extraction</div>
     <div class="about-feature"><i class="fas fa-signature"></i> Signature &amp; Stamp detection with bounding boxes</div>
-    <div class="about-feature"><i class="fas fa-rupee-sign"></i> Cost-efficient inference (&lt;\u20b91 per document)</div>
+    <div class="about-feature"><i class="fas fa-rupee-sign"></i> Cost-efficient inference (&lt;Rs.1 per document)</div>
     <div class="about-feature"><i class="fas fa-microchip"></i> CPU compatible pipeline</div>
     <div class="about-feature"><i class="fas fa-bullseye"></i> 95%+ Document Level Accuracy</div>
 
