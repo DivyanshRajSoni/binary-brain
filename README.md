@@ -1,4 +1,4 @@
-# 🧠 BINARY BRAIN
+# \ud83e\udde0 BINARY BRAIN
 
 ### Intelligent Document Extraction System | Financial Automation
 
@@ -6,26 +6,26 @@
 
 ---
 
-## 🎯 Problem Statement
+## \ud83c\udfaf Problem Statement
 
 Extracting structured data (Dealer Name, Model, Horse Power, Amount, Signature, etc.) from unstructured invoices is labor-intensive and error-prone. Traditional rule-based approaches fail to handle diverse invoices of varying layouts and languages (English, Hindi, Gujarati).
 
 **Manual data entry is:**
-- ❌ Slow
-- ❌ Error-prone
-- ❌ Expensive
-- ❌ Delays credit decisioning
+- \u274c Slow
+- \u274c Error-prone
+- \u274c Expensive
+- \u274c Delays credit decisioning
 
 ---
 
-## 💡 Proposed Solution
+## \ud83d\udca1 Proposed Solution
 
-A **Hybrid Document AI Pipeline** combining **OCR + Vision + NLP + AI Engine** to automatically extract structured data from tractor loan quotation invoices with **≥95% Document Level Accuracy**.
+A **Hybrid Document AI Pipeline** combining **OCR + Vision + NLP + AI Engine** to automatically extract structured data from tractor loan quotation invoices with **\u226595% Document Level Accuracy**.
 
 ### Pipeline Architecture
 
 ```
-PDF Input → Preprocessing → OCR → Layout & Object Detection → Field Extraction → Validation → JSON Output
+PDF Input \u2192 Preprocessing \u2192 OCR \u2192 Layout & Object Detection \u2192 Field Extraction \u2192 Validation \u2192 JSON Output
 ```
 
 | Step | Component | Description |
@@ -39,11 +39,11 @@ PDF Input → Preprocessing → OCR → Layout & Object Detection → Field Extr
 
 ---
 
-## 📋 Extracted Fields
+## \ud83d\udccb Extracted Fields
 
 | Field | Method | Details |
 |-------|--------|---------|
-| **Dealer Name** | Fuzzy Match ≥90% | Matched against known dealer database |
+| **Dealer Name** | Fuzzy Match \u226590% | Matched against known dealer database |
 | **Model Name** | Exact Match | Matched against known tractor models |
 | **Horse Power** | Regex Rule Engine | Pattern-based numeric extraction |
 | **Asset Cost** | Regex Rule Engine | Currency & amount pattern detection |
@@ -52,15 +52,15 @@ PDF Input → Preprocessing → OCR → Layout & Object Detection → Field Extr
 
 ---
 
-## ✨ Features & Novelty
+## \u2728 Features & Novelty
 
 ### Features
-- 🌐 **Multilingual Support** — English, Hindi, Gujarati
-- 📐 **Layout-Independent Extraction** — Works with any invoice format
-- ✍️ **Signature & Stamp Detection** — Using object detection with bounding boxes
-- 💰 **Cost-Efficient Inference** — < $0.01 per document
-- 🖥️ **CPU Compatible Pipeline** — No GPU required
-- 📈 **Scalable** — Works for any invoice type (retail/industrial)
+- \ud83c\udf10 **Multilingual Support** \u2014 English, Hindi, Gujarati
+- \ud83d\udcd0 **Layout-Independent Extraction** \u2014 Works with any invoice format
+- \u270d\ufe0f **Signature & Stamp Detection** \u2014 Using object detection with bounding boxes
+- \ud83d\udcb0 **Cost-Efficient Inference** \u2014 < \u20b91 per document
+- \ud83d\udda5\ufe0f **CPU Compatible Pipeline** \u2014 No GPU required
+- \ud83d\udcc8 **Scalable** \u2014 Works for any invoice type (retail/industrial)
 
 ### Novelty
 - Hybrid rule + AI system for higher accuracy
@@ -70,7 +70,7 @@ PDF Input → Preprocessing → OCR → Layout & Object Detection → Field Extr
 
 ---
 
-## 🛠️ Tech Stack
+## \ud83d\udee0\ufe0f Tech Stack
 
 | Component | Technology |
 |-----------|------------|
@@ -84,7 +84,7 @@ PDF Input → Preprocessing → OCR → Layout & Object Detection → Field Extr
 
 ---
 
-## 🚀 Getting Started
+## \ud83d\ude80 Getting Started
 
 ### Prerequisites
 - Python 3.10+
@@ -93,8 +93,8 @@ PDF Input → Preprocessing → OCR → Layout & Object Detection → Field Extr
 
 ```bash
 # Clone the repository
-git clone https://github.com/DivyanshRajSoni/binary-brain.git
-cd binary-brain
+git clone <repo-url>
+cd tanuhackathon
 
 # Create virtual environment
 python -m venv .venv
@@ -115,29 +115,29 @@ Open **http://localhost:8501** in your browser.
 
 ---
 
-## 📁 Project Structure
+## \ud83d\udcc1 Project Structure
 
 ```
-binary-brain/
-├── app.py                    # Streamlit Web Application
-├── requirements.txt          # Python dependencies
-├── README.md                 # This file
-├── src/
-│   ├── __init__.py
-│   ├── preprocessing.py      # PDF to Image, Deskew, Denoise, Enhance
-│   ├── ocr_engine.py         # EasyOCR multilingual text extraction
-│   ├── detector.py           # Signature & Stamp detection
-│   ├── field_extractor.py    # Dealer Name, Model, HP, Cost extraction
-│   ├── validation.py         # Confidence scoring & JSON output
-│   └── pipeline.py           # Main orchestration pipeline
-├── sample_invoices/          # Sample test invoices
-├── uploads/                  # User uploaded files
-└── outputs/                  # Extraction results (JSON + annotated images)
+tanuhackathon/
+\u251c\u2500\u2500 app.py                    # Streamlit Web Application
+\u251c\u2500\u2500 requirements.txt          # Python dependencies
+\u251c\u2500\u2500 README.md                 # This file
+\u251c\u2500\u2500 src/
+\u2502   \u251c\u2500\u2500 __init__.py
+\u2502   \u251c\u2500\u2500 preprocessing.py      # PDF to Image, Deskew, Denoise, Enhance
+\u2502   \u251c\u2500\u2500 ocr_engine.py         # EasyOCR multilingual text extraction
+\u2502   \u251c\u2500\u2500 detector.py           # Signature & Stamp detection
+\u2502   \u251c\u2500\u2500 field_extractor.py    # Dealer Name, Model, HP, Cost extraction
+\u2502   \u251c\u2500\u2500 validation.py         # Confidence scoring & JSON output
+\u2502   \u2514\u2500\u2500 pipeline.py           # Main orchestration pipeline
+\u251c\u2500\u2500 sample_invoices/          # Sample test invoices
+\u251c\u2500\u2500 uploads/                  # User uploaded files
+\u2514\u2500\u2500 outputs/                  # Extraction results (JSON + annotated images)
 ```
 
 ---
 
-## 📊 Sample Output
+## \ud83d\udcca Sample Output
 
 ```json
 {
@@ -158,14 +158,14 @@ binary-brain/
       "dealerStamp": 0.72
     },
     "documentLevelAccuracy": "85.3%",
-    "costEstimate": "$0.008"
+    "costEstimate": "\u20b90.67"
   }
 }
 ```
 
 ---
 
-## ⚠️ Drawbacks & Mitigations
+## \u26a0\ufe0f Drawbacks & Mitigations
 
 | Drawback | Mitigation Strategy |
 |----------|-------------------|
@@ -176,7 +176,7 @@ binary-brain/
 
 ---
 
-## 👥 Team Binary Brain
+## \ud83d\udc65 Team Binary Brain
 
 | Name | Role | Contact |
 |------|------|---------|
@@ -187,10 +187,10 @@ binary-brain/
 
 ---
 
-## 📜 License
+## \ud83d\udcdc License
 
 This project was built for **IITM IEEE HACKSAGON** hackathon.
 
 ---
 
-*Built with ❤️ by Team Binary Brain*
+*Built with \u2764\ufe0f by Team Binary Brain*

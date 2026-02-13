@@ -254,12 +254,12 @@ class FieldExtractor:
                     'method': 'label_extraction'
                 }
 
-        # Method 2: Regex for amounts
+        # Method 2: Regex for amounts (handles OCR comma/dot confusion)
         amount_patterns = [
-            r'(?:Rs\.?|\u20b9|INR)\s*([\d,]+(?:\.\d{2})?)',
-            r'(?:total|amount|cost|price)[\s:]*(?:Rs\.?|\u20b9)?\s*([\d,]+(?:\.\d{2})?)',
-            r'(?:total|amount|cost|price)[\s:]*(\d[\d,]*(?:\.\d{2})?)',
-            r'(\d{4,8}(?:\.\d{2})?)\s*(?:/\-|only)',
+            r'(?:Rs\.?|\u20b9|INR)\s*([\d,\.]+)',
+            r'(?:total|amount|cost|price)[\s:]*(?:Rs\.?|\u20b9)?\s*([\d,\.]+)',
+            r'(?:total|amount|cost|price)[\s:]*([\d][\d,\.]*)',
+            r'([\d,\.]{5,12})\s*(?:/\-|only)',
         ]
         for pattern in amount_patterns:
             matches = re.findall(pattern, full_text, re.IGNORECASE)
@@ -275,7 +275,7 @@ class FieldExtractor:
                         }
 
         # Method 3: Find largest number (likely the total)
-        all_numbers = re.findall(r'[\d,]+(?:\.\d{2})?', full_text)
+        all_numbers = re.findall(r'[\d,\.]+', full_text)
         amounts = []
         for num_str in all_numbers:
             amount = self._extract_amount(num_str)
@@ -345,11 +345,46 @@ class FieldExtractor:
         return None
 
     def _extract_amount(self, text: str) -> Optional[float]:
-        """Extract monetary amount from text, removing currency symbols."""
+        """Extract monetary amount from text, handling OCR comma/dot confusion.
+        
+        Indian format: 6,50,000 or 6.50.000 (OCR misread) \u2192 650000
+        Decimal: 6,50,000.00 \u2192 650000.00
+        """
         if isinstance(text, (int, float)):
             return float(text)
-        text = re.sub(r'[\u20b9$\u20acRs\.INR,\s]', '', str(text))
-        match = re.search(r'(\d+(?:\.\d{1,2})?)', text)
-        if match:
-            return float(match.group(1))
-        return None
+        text = str(text)
+        # Remove currency symbols and whitespace
+        text = re.sub(r'[\u20b9$\u20ac\s]', '', text)
+        text = re.sub(r'\b(?:Rs\.?|INR)\b', '', text, flags=re.IGNORECASE)
+        text = text.strip()
+
+        # Find the numeric part (digits, commas, dots)
+        match = re.search(r'([\d,\.]+)', text)
+        if not match:
+            return None
+        num_str = match.group(1)
+
+        # Count dots and commas
+        dot_count = num_str.count('.')
+        comma_count = num_str.count(',')
+
+        # Case 1: Multiple dots (e.g., 6.50.000) \u2192 dots are thousand separators (OCR misread commas)
+        if dot_count > 1:
+            num_str = num_str.replace('.', '').replace(',', '')
+            return float(num_str) if num_str else None
+
+        # Case 2: Single dot at the end with 1-2 decimal digits (e.g., 650000.50) \u2192 real decimal
+        if dot_count == 1:
+            parts = num_str.split('.')
+            if len(parts[1]) <= 2 and len(parts[1]) > 0:
+                # Likely a real decimal point
+                cleaned = parts[0].replace(',', '') + '.' + parts[1]
+                return float(cleaned) if cleaned.replace('.', '') else None
+            else:
+                # Dot is a thousand separator (e.g., 6.50.000 partially, or 6.50000)
+                num_str = num_str.replace('.', '').replace(',', '')
+                return float(num_str) if num_str else None
+
+        # Case 3: No dots, just commas (e.g., 6,50,000) \u2192 normal Indian format
+        num_str = num_str.replace(',', '')
+        return float(num_str) if num_str else None

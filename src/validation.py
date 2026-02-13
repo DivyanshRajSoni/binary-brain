@@ -99,7 +99,7 @@ class ValidationEngine:
                     'horsePower': horse_power.get('method', 'N/A'),
                     'assetCost': asset_cost.get('method', 'N/A'),
                 },
-                'costEstimate': '$0.008'  # Cost-efficient inference
+                'costEstimate': '\u20b90.67'  # Cost-efficient inference
             }
         }
 
@@ -149,73 +149,78 @@ class ValidationEngine:
 
                 # Validate range
                 if valid_range:
-                    min_val, max_val = valid_range
-                    # Apply 5% tolerance
-                    min_val_tol = min_val * (1 - self.numeric_tolerance)
-                    max_val_tol = max_val * (1 + self.numeric_tolerance)
-
-                    if not (min_val_tol <= num_value <= max_val_tol):
+                    min_val = valid_range[0] * (1 - self.numeric_tolerance)
+                    max_val = valid_range[1] * (1 + self.numeric_tolerance)
+                    if not (min_val <= num_value <= max_val):
                         return {
-                            'value': str(int(num_value)),
+                            'value': value,
                             'confidence': field.get('confidence', 0) * 0.5,
                             'method': field.get('method', 'unknown'),
                             'valid': False,
-                            'warning': f'Value {num_value} outside expected range'
+                            'warning': f'Value {num_value} outside range {valid_range}'
                         }
 
-                value = str(int(num_value))
+                return {
+                    'value': str(int(num_value)) if num_value == int(num_value) else str(num_value),
+                    'confidence': field.get('confidence', 0),
+                    'method': field.get('method', 'unknown'),
+                    'valid': True
+                }
+
             except ValueError:
-                pass
+                return {
+                    'value': value,
+                    'confidence': field.get('confidence', 0) * 0.5,
+                    'method': field.get('method', 'unknown'),
+                    'valid': False,
+                    'warning': 'Could not parse numeric value'
+                }
 
         return {
-            'value': value,
-            'confidence': field.get('confidence', 0),
-            'method': field.get('method', 'unknown'),
-            'valid': True
+            'value': None,
+            'confidence': 0,
+            'method': field.get('method', 'not_found'),
+            'valid': False
         }
 
     def _clean_text(self, text: str) -> str:
-        """Clean and normalize extracted text."""
-        if not text:
-            return text
-
+        """Clean extracted text."""
+        import re
         # Remove extra whitespace
-        text = ' '.join(text.split())
+        text = re.sub(r'\s+', ' ', text).strip()
+        # Remove leading/trailing punctuation
+        text = text.strip('.:;,- ')
+        return text
 
-        # Remove leading/trailing special characters
-        text = text.strip('.,;:-_|/\\()[]{}<>')
-
-        # Remove currency symbols for amount fields
-        text = text.replace('\u20b9', '').replace('Rs.', '').replace('Rs', '')
-
-        return text.strip()
-
-    def _calculate_document_accuracy(self, *fields) -> str:
+    def _calculate_document_accuracy(self, dealer_name, model_name,
+                                      horse_power, asset_cost,
+                                      signature, stamp) -> str:
         """Calculate overall document-level accuracy."""
-        confidences = []
-        for field in fields:
-            if isinstance(field, dict) and 'confidence' in field:
-                confidences.append(field['confidence'])
+        fields = [
+            (dealer_name, 0.2),
+            (model_name, 0.2),
+            (horse_power, 0.15),
+            (asset_cost, 0.2),
+        ]
 
-        if confidences:
-            avg_conf = sum(confidences) / len(confidences)
-            return f"{avg_conf * 100:.1f}%"
-        return "0%"
+        total_weight = sum(w for _, w in fields)
+        total_conf = sum(
+            f.get('confidence', 0) * w for f, w in fields
+        )
 
-    def validate_bounding_box(self, predicted_bbox: list,
-                               ground_truth_bbox: list) -> Dict:
-        """Validate bounding box using IoU >= 0.5."""
-        if not predicted_bbox or not ground_truth_bbox:
-            return {'valid': False, 'iou': 0}
+        # Add signature and stamp
+        if signature:
+            total_conf += signature.get('confidence', 0) * 0.125
+            total_weight += 0.125
+        if stamp:
+            total_conf += stamp.get('confidence', 0) * 0.125
+            total_weight += 0.125
 
-        iou = self._calculate_iou(predicted_bbox, ground_truth_bbox)
-        return {
-            'valid': iou >= self.iou_threshold,
-            'iou': round(iou, 4)
-        }
+        accuracy = (total_conf / total_weight * 100) if total_weight > 0 else 0
+        return f"{accuracy:.1f}%"
 
-    def _calculate_iou(self, bbox1: list, bbox2: list) -> float:
-        """Calculate IoU between two bounding boxes."""
+    def validate_iou(self, bbox1: list, bbox2: list) -> float:
+        """Calculate IoU between two bounding boxes [x1, y1, x2, y2]."""
         x1 = max(bbox1[0], bbox2[0])
         y1 = max(bbox1[1], bbox2[1])
         x2 = min(bbox1[2], bbox2[2])
@@ -228,7 +233,8 @@ class ValidationEngine:
 
         return intersection / union if union > 0 else 0
 
-    @staticmethod
-    def to_json(output: Dict, indent: int = 2) -> str:
-        """Convert output to JSON string."""
-        return json.dumps(output, indent=indent, ensure_ascii=False)
+    def save_output(self, output: Dict, output_path: str):
+        """Save output to JSON file."""
+        with open(output_path, 'w', encoding='utf-8') as f:
+            json.dump(output, f, indent=2, ensure_ascii=False)
+        return output_path
