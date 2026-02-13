@@ -1,0 +1,12 @@
+easyocr
+opencv-python-headless
+numpy
+Pillow
+streamlit
+fuzzywuzzy
+python-Levenshtein
+pdf2image
+reportlab
+torch
+torchvision
+PyMuPDF

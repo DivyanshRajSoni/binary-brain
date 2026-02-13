@@ -1,0 +1,45 @@
+# Virtual environment
+.venv/
+venv/
+env/
+
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.egg-info/
+dist/
+build/
+*.egg
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+Thumbs.db
+Desktop.ini
+.DS_Store
+
+# Project outputs
+outputs/
+uploads/
+*.log
+
+# Model files
+*.pth
+*.pt
+
+# PPT source
+*.ppt
+*.pptx
+
+# Extracted images from PPT
+ppt_images/
+extracted_images/
+
+# Temporary
+tmp/
+temp/
